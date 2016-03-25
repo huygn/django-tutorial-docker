@@ -1,9 +1,9 @@
 language: python
 python:
   - "3.5"
-before_install:
-  - cd mysite
 install:
   - pip install -r requirements.txt
+before_script:
+  - cd mysite
 script:
   - python manage.py check
