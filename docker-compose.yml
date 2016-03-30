@@ -5,6 +5,15 @@ services:
     volumes:
       - postgresql-data:/var/lib/postgresql
 
+  db_wait:
+    image: postgres
+    links: ["db"]
+    command: >
+      /bin/bash -c '
+        until psql --host=db --username=postgres; do sleep 1; done;
+        echo "Postgres is up"
+      '
+
   web:
     command: python manage.py runserver 0.0.0.0:8000
     build: .
@@ -14,7 +23,9 @@ services:
       - "8000:8000"
     depends_on:
       - db
-    entrypoint: /usr/bin/wait-for-it.sh db:5432 --
+      - db_wait
+    entrypoint:
+      - /code/entrypoint.sh
 
 volumes:
   postgresql-data:
