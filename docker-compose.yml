@@ -14,6 +14,15 @@ services:
         echo "Postgres is up"
       '
 
+  redis:
+    image: redis
+    command: redis-server /usr/local/etc/redis/redis.conf
+    volumes:
+      - ./redis/config/redis.conf:/usr/local/etc/redis/redis.conf
+      - /tmp/redis-data:/data
+    ports:
+      - "63790:6379"
+
   web:
     command: python manage.py runserver 0.0.0.0:8000
     build: .
@@ -24,6 +33,7 @@ services:
     depends_on:
       - db
       - db_wait
+      - redis
     entrypoint:
       - /code/entrypoint.sh
 
