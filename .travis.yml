@@ -15,10 +15,11 @@ install:
   - pip install -r requirements.txt
 
 before_script:
-  - psql -c 'create database postgres;' -U postgres
+  # - psql -c 'create database postgres;' -U postgres
   - cd mysite
 
 script:
+  - netstat -ltnp
   - python manage.py check
   - python manage.py migrate
   - python manage.py test -v 2 polls
