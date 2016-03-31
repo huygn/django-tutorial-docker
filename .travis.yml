@@ -5,11 +5,14 @@ language: python
 services:
   - docker
 
-python:
-  - "3.5"
+# python:
+#   - "3.5"
 
 before_install:
   - curl -fsSL https://raw.githubusercontent.com/CWSpear/local-persist/master/scripts/install.sh | sudo bash -s -- --upstart
+
+install:
+  - docker-compose build
 
 script:
   - docker-compose run web python manage.py test -v 2 polls
