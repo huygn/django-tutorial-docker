@@ -1,9 +1,50 @@
 language: python
 python:
   - "3.5"
+
+services:
+  - postgresql
+  - redis-server
+
+env:
+  DB_HOST: 127.0.0.1
+  REDIS_HOST: 127.0.0.1
+
 install:
   - pip install -r requirements.txt
+
 before_script:
   - cd mysite
+
 script:
   - python manage.py check
+  - python manage.py test -v 2 polls
+
+
+# sudo: required
+#
+# services:
+#   - docker
+#
+# env:
+#   DOCKER_COMPOSE_VERSION: 1.6.2
+#
+# before_install:
+#   - sudo apt-get purge -y docker-engine
+#   - sudo apt-get update
+#   - sudo apt-get install -y docker-engine
+#   - sudo rm /usr/local/bin/docker-compose
+#   - curl -L https://github.com/docker/compose/releases/download/${DOCKER_COMPOSE_VERSION}/docker-compose-`uname -s`-`uname -m` > docker-compose
+#   - chmod +x docker-compose
+#   - sudo mv docker-compose /usr/local/bin
+#   - curl -fsSL https://raw.githubusercontent.com/CWSpear/local-persist/master/scripts/install.sh | sudo bash -s -- --upstart
+#
+# install:
+#   - docker-compose build
+#   - docker-compose up -d
+#   - docker ps
+#   - docker-compose ps
+#   - docker-compose run web python manage.py migrate
+#
+# script:
+#   - docker-compose run web python manage.py test -v 2 polls

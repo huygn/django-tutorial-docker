@@ -78,12 +78,19 @@ WSGI_APPLICATION = 'mysite.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'postgres',
-        'USER': 'postgres',
-        'HOST': 'db',
-        'PORT': 5432,
+        'NAME': os.environ.get('DB_NAME', 'postgres'),
+        'USER': os.environ.get('DB_USER', 'postgres'),
+        'PASSWORD': os.environ.get('DB_PASSWORD', ''),
+        'HOST': os.environ.get('DB_HOST', 'db'),
+        'PORT': os.environ.get('DB_PORT', 5432),
     }
 }
+
+
+# Redis host & port for easy access
+REDIS_HOST = os.environ.get('REDIS_HOST', 'redis')
+REDIS_PORT = os.environ.get('REDIS_PORT', 6379)
+
 
 # Cache
 # https://docs.djangoproject.com/en/1.9/ref/settings/#caches
@@ -93,7 +100,7 @@ CACHES = {
         # pip install django-redis-cache
         # http://django-redis-cache.readthedocs.org/en/latest/advanced_configuration.html
         'BACKEND': 'redis_cache.RedisCache',
-        'LOCATION': 'redis:6379',
+        'LOCATION': '{host}:{port}'.format(host=REDIS_HOST, port=REDIS_PORT),
         'OPTIONS': {
             'DB': 1,
 
