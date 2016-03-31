@@ -1,6 +1,6 @@
 sudo: required
 
-language: python
+# language: python
 
 services:
   - docker
@@ -25,6 +25,7 @@ install:
   - docker-compose build
 
 script:
+  - docker-compose up -d
   - docker-compose run web python manage.py test -v 2 polls
 
 # install:
