@@ -1,9 +1,23 @@
+sudo: required
+
 language: python
+
+services:
+  - docker
+
 python:
   - "3.5"
-install:
-  - pip install -r requirements.txt
-before_script:
-  - cd mysite
+
+before_install:
+  - curl -fsSL https://raw.githubusercontent.com/CWSpear/local-persist/master/scripts/install.sh | sudo bash -s -- --upstart
+
 script:
-  - python manage.py check
+  - docker-compose run web python manage.py test -v 2 polls
+
+# install:
+#   - pip install -r requirements.txt
+# before_script:
+#   - cd mysite
+# script:
+#   - python manage.py check
+#   - python manage.py test -v 2 polls
