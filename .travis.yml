@@ -1,29 +1,30 @@
-sudo: required
-
 language: python
 python:
   - "3.5"
 
 services:
-  # - docker
   - postgresql
 
 env:
-  DB_HOST: postgresql
+  DB_HOST: 127.0.0.1
 
 install:
   - pip install -r requirements.txt
 
 before_script:
-  # - psql -c 'create database postgres;' -U postgres
   - cd mysite
 
 script:
-  - netstat -ltnp
   - python manage.py check
   - python manage.py migrate
   - python manage.py test -v 2 polls
 
+
+# sudo: required
+#
+# services:
+#   - docker
+#
 # env:
 #   DOCKER_COMPOSE_VERSION: 1.6.2
 #
