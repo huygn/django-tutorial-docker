@@ -86,6 +86,12 @@ DATABASES = {
     }
 }
 
+
+# Redis host & port for easy access
+REDIS_HOST = os.environ.get('REDIS_HOST', 'redis')
+REDIS_PORT = os.environ.get('REDIS_PORT', 6379)
+
+
 # Cache
 # https://docs.djangoproject.com/en/1.9/ref/settings/#caches
 # https://docs.djangoproject.com/en/1.9/topics/cache/
@@ -94,7 +100,7 @@ CACHES = {
         # pip install django-redis-cache
         # http://django-redis-cache.readthedocs.org/en/latest/advanced_configuration.html
         'BACKEND': 'redis_cache.RedisCache',
-        'LOCATION': 'redis:6379',
+        'LOCATION': '{host}:{port}'.format(host=REDIS_HOST, port=REDIS_PORT),
         'OPTIONS': {
             'DB': 1,
 
