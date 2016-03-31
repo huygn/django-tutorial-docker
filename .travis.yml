@@ -23,6 +23,7 @@ before_install:
 
 install:
   - docker-compose build
+  - docker-compose up -d
   - docker-compose run web python manage.py migrate
 
 script:
