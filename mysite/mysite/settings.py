@@ -85,6 +85,47 @@ DATABASES = {
     }
 }
 
+# Cache
+# https://docs.djangoproject.com/en/1.9/ref/settings/#caches
+# https://docs.djangoproject.com/en/1.9/topics/cache/
+CACHES = {
+    'default': {
+        # pip install django-redis-cache
+        # http://django-redis-cache.readthedocs.org/en/latest/advanced_configuration.html
+        'BACKEND': 'redis_cache.RedisCache',
+        'LOCATION': 'redis:6379',
+        'OPTIONS': {
+            'DB': 1,
+
+            # requires 'pip install hiredis'
+            'PARSER_CLASS': 'redis.connection.HiredisParser',
+
+            # explain: https://github.com/andymccurdy/redis-py/issues/341#issuecomment-16950301
+            'CONNECTION_POOL_CLASS': 'redis.BlockingConnectionPool',
+            'CONNECTION_POOL_CLASS_KWARGS': {
+                'max_connections': 100,
+                'timeout': 10,
+            },
+
+            # https://github.com/sebleier/django-redis-cache/blob/master/redis_cache/serializers.py#L45
+            'SERIALIZER_CLASS': 'redis_cache.serializers.PickleSerializer',
+            'SERIALIZER_CLASS_KWARGS': {
+                'pickle_version': -1
+            },
+
+            'SOCKET_TIMEOUT': 5,
+            'SOCKET_CONNECT_TIMEOUT': 5,
+        },
+    },
+}
+
+
+# Redis as backend for Django session data
+# https://docs.djangoproject.com/en/1.9/topics/http/sessions/#using-cached-sessions
+SESSION_ENGINE = 'django.contrib.sessions.backends.cached_db'
+SESSION_CACHE_ALIAS = 'default'
+
+
 # Password validation
 # https://docs.djangoproject.com/en/1.9/ref/settings/#auth-password-validators
 
@@ -111,9 +152,9 @@ LANGUAGE_CODE = 'en-us'
 
 TIME_ZONE = 'UTC'
 
-USE_I18N = True
+USE_I18N = False
 
-USE_L10N = True
+USE_L10N = False
 
 USE_TZ = True
 
