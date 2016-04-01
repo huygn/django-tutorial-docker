@@ -1,9 +1,9 @@
 FROM python:3.5
 ENV PYTHONUNBUFFERED 1
 
-COPY requirements.txt /code/
-WORKDIR /code
+COPY ./apps/requirements.txt /apps/
+WORKDIR /apps
 RUN pip install -r requirements.txt
 
-# move to Django app folder
-WORKDIR /code/mysite
+COPY entrypoint.sh /entrypoint.sh
+ENTRYPOINT ["/entrypoint.sh"]
