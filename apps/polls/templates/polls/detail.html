@@ -1,3 +1,7 @@
+{% extends 'polls/base.html' %}
+
+{% block content %}
+
 <h3>{{ question.question_text }}</h3>
 <span>{{ question.pub_date }}</span>
 
@@ -11,3 +15,5 @@
 {% endfor %}
 <input type="submit" value="Vote" />
 </form>
+
+{% endblock %}
