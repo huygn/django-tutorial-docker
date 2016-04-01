@@ -12,7 +12,6 @@ https://docs.djangoproject.com/en/1.9/ref/settings/
 
 import os
 from .url_settings import ABSOLUTE_URL_OVERRIDES
-from .config.local import show_toolbar
 
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
@@ -33,7 +32,7 @@ DEBUG = True
 # http://django-debug-toolbar.readthedocs.org/en/1.4/index.html
 DEBUG_TOOLBAR_PATCH_SETTINGS = False
 DEBUG_TOOLBAR_CONFIG = {
-    'SHOW_TOOLBAR_CALLBACK': show_toolbar,
+    'SHOW_TOOLBAR_CALLBACK': 'mysite.config.local.show_toolbar',
 }
 
 
