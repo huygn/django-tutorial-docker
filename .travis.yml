@@ -10,11 +10,11 @@ env:
   DB_HOST: 127.0.0.1
   REDIS_HOST: 127.0.0.1
 
+before_install:
+  - cd apps
+
 install:
   - pip install -r requirements.txt
-
-before_script:
-  - cd mysite
 
 script:
   - python manage.py check
