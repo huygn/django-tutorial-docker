@@ -16,4 +16,6 @@ tests/.coverage
 build/
 tests/report/
 
+# this particular project
+data/
 **/staticfiles

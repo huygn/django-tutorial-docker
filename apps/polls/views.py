@@ -6,6 +6,8 @@ from django.db.models import F
 
 from .models import Question, Choice
 
+from polls.tasks import add, long_task, debug_task
+
 
 def index(request):
     latest_question_list = Question.objects.filter(

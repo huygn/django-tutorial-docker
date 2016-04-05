@@ -1,8 +1,6 @@
 """
 Configurations for local development.
 """
-import os
-
 from django.conf import settings
 
 

@@ -3,11 +3,14 @@ services:
   db:
     image: postgres
     volumes:
-      - postgresql-data:/var/lib/postgresql
+      - ./data/postgres-data:/var/lib/postgresql/data
+    ports:
+      - "54320:5432"
 
   db_wait:
     image: postgres
-    links: ["db"]
+    links:
+      - db
     command: >
       /bin/bash -c '
         until psql --host=db --username=postgres; do sleep 1; done;
@@ -19,12 +22,11 @@ services:
     command: redis-server /usr/local/etc/redis/redis.conf
     volumes:
       - ./redis/config/redis.conf:/usr/local/etc/redis/redis.conf
-      - /tmp/redis-data:/data
+      - ./data/redis-data:/data
     ports:
       - "63790:6379"
 
   web:
-    restart: always
     command: python manage.py runserver 0.0.0.0:8000
     build: .
     volumes:
@@ -32,12 +34,28 @@ services:
     ports:
       - "8000:8000"
     depends_on:
-      - db
       - db_wait
+    links:
+      - db
+      - redis
+      - celery_flower
+
+  celery:
+    command: celery worker -A mysite -l info
+    build: .
+    volumes:
+      - ./apps:/apps
+    links:
       - redis
 
-volumes:
-  postgresql-data:
-    driver: local-persist
-    driver_opts:
-      mountpoint: /data/local-persist/postgresql
+  celery_flower:
+    command: celery flower -A mysite --address=0.0.0.0 --port=5555
+    build: .
+    volumes:
+      - ./apps:/apps
+    ports:
+      - "5555:5555"
+    depends_on:
+      - celery
+    links:
+      - redis
