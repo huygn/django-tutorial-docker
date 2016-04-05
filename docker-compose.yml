@@ -3,7 +3,7 @@ services:
   db:
     image: postgres
     volumes:
-      - /var/lib/postgresql/data:/var/lib/postgresql/data
+      - ./data/postgres-data:/var/lib/postgresql/data
     ports:
       - "54320:5432"
 
@@ -22,7 +22,7 @@ services:
     command: redis-server /usr/local/etc/redis/redis.conf
     volumes:
       - ./redis/config/redis.conf:/usr/local/etc/redis/redis.conf
-      - /tmp/redis-data:/data
+      - ./data/redis-data:/data
     ports:
       - "63790:6379"
 
