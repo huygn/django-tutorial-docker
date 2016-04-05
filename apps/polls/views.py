@@ -6,8 +6,17 @@ from django.db.models import F
 
 from .models import Question, Choice
 
+from polls.tasks import add, long_task, debug_task
+
 
 def index(request):
+    # test Celery
+    debug_task.delay()
+    add.delay(1, 2)
+    # this task sleep for 20 seconds, but it run in another thread by Celery
+    long_task.delay(20)
+
+
     latest_question_list = Question.objects.filter(
         pub_date__lte=timezone.now()
     ).order_by('-pub_date')[:5]
