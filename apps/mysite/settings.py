@@ -10,8 +10,11 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/1.9/ref/settings/
 """
 
+from __future__ import absolute_import
+
 import os
-from .url_settings import ABSOLUTE_URL_OVERRIDES
+
+from .url_settings import ABSOLUTE_URL_OVERRIDES  # noqa
 
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
@@ -112,6 +115,7 @@ DATABASES = {
 # Redis host & port for easy access
 REDIS_HOST = os.environ.get('REDIS_HOST', 'redis')
 REDIS_PORT = os.environ.get('REDIS_PORT', 6379)
+REDIS_DB_CELERY = os.environ.get('REDIS_DB', 0)
 
 
 # Cache
@@ -153,6 +157,27 @@ CACHES = {
 # https://docs.djangoproject.com/en/1.9/topics/http/sessions/#using-cached-sessions
 SESSION_ENGINE = 'django.contrib.sessions.backends.cached_db'
 SESSION_CACHE_ALIAS = 'default'
+
+
+# Celery settings
+BROKER_URL = os.environ.get(
+    'BROKER_URL',
+    'redis://{host}:{port}/{db_number}'.format(
+        host=REDIS_HOST,
+        port=REDIS_PORT,
+        db_number=REDIS_DB_CELERY
+    )
+)
+BROKER_TRANSPORT_OPTIONS = {'visibility_timeout': 3600}
+CELERY_RESULT_BACKEND = BROKER_URL
+
+# Only add pickle to this list if your broker is secured
+# from unwanted access (see userguide/security.html)
+CELERY_ACCEPT_CONTENT = ['json']
+CELERY_TASK_SERIALIZER = 'json'
+CELERY_RESULT_SERIALIZER = 'json'
+CELERY_ENABLE_UTC = True
+CELERY_TIMEZONE = 'UTC'
 
 
 # Password validation

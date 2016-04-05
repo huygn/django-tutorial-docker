@@ -38,3 +38,24 @@ services:
     links:
       - db
       - redis
+      - celery_flower
+
+  celery:
+    command: celery worker -A mysite -l info
+    build: .
+    volumes:
+      - ./apps:/apps
+    links:
+      - redis
+
+  celery_flower:
+    command: celery flower -A mysite --address=0.0.0.0 --port=5555
+    build: .
+    volumes:
+      - ./apps:/apps
+    ports:
+      - "5555:5555"
+    depends_on:
+      - celery
+    links:
+      - redis
