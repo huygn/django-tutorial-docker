@@ -168,8 +168,8 @@ BROKER_URL = os.environ.get(
         db_number=REDIS_DB_CELERY
     )
 )
-BROKER_TRANSPORT_OPTIONS = {'visibility_timeout': 3600}
 CELERY_RESULT_BACKEND = BROKER_URL
+BROKER_TRANSPORT_OPTIONS = {'visibility_timeout': 3600}
 
 # Only add pickle to this list if your broker is secured
 # from unwanted access (see userguide/security.html)
