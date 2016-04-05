@@ -3,11 +3,14 @@ services:
   db:
     image: postgres
     volumes:
-      - postgresql-data:/var/lib/postgresql
+      - /var/lib/postgresql:/var/lib/postgresql
+    ports:
+      - "54320:5432"
 
   db_wait:
     image: postgres
-    links: ["db"]
+    links:
+      - db
     command: >
       /bin/bash -c '
         until psql --host=db --username=postgres; do sleep 1; done;
@@ -24,7 +27,6 @@ services:
       - "63790:6379"
 
   web:
-    restart: always
     command: python manage.py runserver 0.0.0.0:8000
     build: .
     volumes:
@@ -32,12 +34,7 @@ services:
     ports:
       - "8000:8000"
     depends_on:
-      - db
       - db_wait
+    links:
+      - db
       - redis
-
-volumes:
-  postgresql-data:
-    driver: local-persist
-    driver_opts:
-      mountpoint: /data/local-persist/postgresql
