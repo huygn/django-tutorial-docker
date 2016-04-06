@@ -52,6 +52,7 @@ INSTALLED_APPS = [
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
+    'channels',
     # For development
     # Disables runserver static file handling (equal to 'runserver --nostatic')
     # http://whitenoise.evans.io/en/stable/django.html#using-whitenoise-in-development
@@ -115,7 +116,9 @@ DATABASES = {
 # Redis host & port for easy access
 REDIS_HOST = os.environ.get('REDIS_HOST', 'redis')
 REDIS_PORT = os.environ.get('REDIS_PORT', 6379)
-REDIS_DB_CELERY = os.environ.get('REDIS_DB', 0)
+REDIS_DB_CACHE = os.environ.get('REDIS_DB_CACHE', 0)
+REDIS_DB_ASGI = os.environ.get('REDIS_DB_ASGI', 1)
+REDIS_DB_CELERY = os.environ.get('REDIS_DB_CELERY', 2)
 
 
 # Cache
@@ -128,7 +131,7 @@ CACHES = {
         'BACKEND': 'redis_cache.RedisCache',
         'LOCATION': '{host}:{port}'.format(host=REDIS_HOST, port=REDIS_PORT),
         'OPTIONS': {
-            'DB': 1,
+            'DB': REDIS_DB_CACHE,
 
             # requires 'pip install hiredis'
             'PARSER_CLASS': 'redis.connection.HiredisParser',
@@ -162,10 +165,10 @@ SESSION_CACHE_ALIAS = 'default'
 # Celery settings
 BROKER_URL = os.environ.get(
     'BROKER_URL',
-    'redis://{host}:{port}/{db_number}'.format(
+    'redis://{host}:{port}/{db}'.format(
         host=REDIS_HOST,
         port=REDIS_PORT,
-        db_number=REDIS_DB_CELERY
+        db=REDIS_DB_CELERY
     )
 )
 CELERY_RESULT_BACKEND = BROKER_URL
@@ -178,6 +181,27 @@ CELERY_TASK_SERIALIZER = 'json'
 CELERY_RESULT_SERIALIZER = 'json'
 CELERY_ENABLE_UTC = True
 CELERY_TIMEZONE = 'UTC'
+
+
+# Django Channels
+CHANNEL_LAYERS = {
+    "default": {
+        "BACKEND": "asgi_redis.RedisChannelLayer",
+        "CONFIG": {
+            "hosts": [
+                os.environ.get(
+                    'REDIS_URL',
+                    'redis://{host}:{port}/{db}'.format(
+                        host=REDIS_HOST,
+                        port=REDIS_PORT,
+                        db=REDIS_DB_ASGI,
+                    ),
+                )
+            ],
+        },
+        "ROUTING": "polls.routing.channel_routing",
+    },
+}
 
 
 # Password validation

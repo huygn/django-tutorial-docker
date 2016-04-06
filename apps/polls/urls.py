@@ -1,5 +1,6 @@
 from django.views.decorators.cache import never_cache, cache_page
 from django.conf.urls import url
+
 from . import views
 
 
@@ -14,4 +15,7 @@ urlpatterns = [
     url(r'^(?P<question_id>[0-9]+)/results/$', views.results, name='results'),
     # ex: /polls/5/vote/
     url(r'^(?P<question_id>[0-9]+)/vote/$', views.vote, name='vote'),
+
+    # api
+    url(r'^api/$', views.api, name='api'),
 ]

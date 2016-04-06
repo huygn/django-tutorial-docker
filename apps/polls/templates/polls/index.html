@@ -13,4 +13,7 @@
         <p>No polls are available.</p>
     {% endif %}
 
+    <button type="button" id="btn-ws" onclick="send_msg()">Send msg via WS</button>
+    <button type="button" id="btn-http" onclick="send_http('{% url 'polls:api' %}')">Start a long task</button>
+
 {% endblock %}

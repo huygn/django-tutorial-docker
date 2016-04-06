@@ -1,12 +1,12 @@
 from django.utils import timezone
 from django.shortcuts import render, get_object_or_404
-from django.http import HttpResponse, HttpResponseRedirect, Http404
+from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
 from django.core.urlresolvers import reverse
 from django.db.models import F
 
 from .models import Question, Choice
 
-from polls.tasks import add, long_task, debug_task
+from .tasks import long_task, debug_task
 
 
 def index(request):
@@ -16,6 +16,12 @@ def index(request):
     context = dict(latest_question_list=latest_question_list)
     return render(request, 'polls/index.html', context=context)
 
+
+def api(request):
+    long_task.delay(10)
+    return JsonResponse({})
+
+
 def detail(request, question_id):
     question = get_object_or_404(
         Question,
@@ -24,10 +30,12 @@ def detail(request, question_id):
     context = dict(question=question)
     return render(request, 'polls/detail.html', context=context)
 
+
 def results(request, question_id):
     question = get_object_or_404(Question, pk=question_id)
     context = dict(question=question)
     return render(request, 'polls/results.html', context=context)
+
 
 def vote(request, question_id):
     question = get_object_or_404(Question, pk=question_id)

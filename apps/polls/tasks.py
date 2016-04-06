@@ -22,9 +22,10 @@ def xsum(numbers):
 
 @shared_task(bind=True)
 def long_task(self, i):
-    print('request id: {}'.format(self.request.id))
+    # change task name here only took effect after this task is called
+    self.name = 'Long sleeping task'
+    print(self.request.id)
     sleep(i)
-    print('slept {} seconds!'.format(i))
     return True
 
 
