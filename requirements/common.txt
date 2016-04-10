@@ -1,0 +1,9 @@
+-r celery.txt
+-r flower.txt
+-r channels.txt
+Django==1.9.5
+django-redis-cache==1.6.5
+redis==2.10.5
+hiredis==0.2.0
+psycopg2==2.6.1
+whitenoise==3.0
